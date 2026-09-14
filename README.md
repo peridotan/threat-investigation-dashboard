@@ -1,6 +1,6 @@
 # Threat Investigation
 
-> **v1.0.0 — Stable Release**  
+> **v1.0.3 — Readability Update**  
 > Security Intelligence Platform の **Investigate / Relate** レイヤー。
 
 Threat Investigation は、MITRE ATT&CK® Enterprise を基盤に、Threat Actor / Software / Technique / Platform を起点として、ATT&CK に記録された Evidence と Relationship を短時間で確認するための静的 Web ツールです。
@@ -57,6 +57,7 @@ Platform は独立した STIX Entity ではないため、Technique / Software /
 - Security Intelligence Library からの Navigation Context 受け取り
 - Vulnerability Intelligence への Context-preserving navigation
 - Browser-readable MIT License / Legal & Data Notice
+- 文字サイズ `標準 / 大 / 特大` の切替とブラウザ内設定保存
 
 ## Evidence semantics
 
@@ -116,6 +117,10 @@ Security Intelligence Library から Navigation Context を渡す例:
 ```
 
 詳細は `INTEGRATION_CONTRACT.md` を参照してください。
+
+## 表示サイズ
+
+右上の `Aa 文字サイズ` から `標準 (100%) / 大 (115%) / 特大 (130%)` を切り替えられます。設定はブラウザの localStorage に保存され、次回アクセス時も維持されます。ブラウザ本体のズームとは独立した Dashboard 内の表示設定です。
 
 ## Local run
 

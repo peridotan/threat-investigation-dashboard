@@ -1,3 +1,12 @@
+## v1.0.3 — Font size control
+
+- Added an `Aa 文字サイズ` control with `標準 / 大 / 特大` options.
+- Stores the selected display size in localStorage and restores it on the next visit.
+- Scales existing dashboard typography without changing ATT&CK data or evidence semantics.
+- Added `font-size.css` / `font-size.js` and included them in the GitHub Pages artifact.
+- Updated static asset cache-busting to v1.0.3.
+- No ATT&CK data schema change; `dashboard.json` regeneration is not required for this UI release.
+
 ## v1.0.2 — Platform Result consistency
 
 - Added Campaigns to the Platform Finding metric row.

@@ -42,7 +42,7 @@ jobs:
         run: |
           rm -rf _site
           mkdir -p _site/data
-          cp index.html legal.html app.js environment.js style.css .nojekyll _site/
+          cp index.html legal.html app.js environment.js style.css font-size.css font-size.js .nojekyll _site/
           cp data/dashboard.json _site/data/
           cp LICENSE COPYRIGHT.md THIRD_PARTY_NOTICES.md DISCLAIMER.md README.md MY_ENVIRONMENT_SCHEMA.md _site/
           cp data/README.md _site/data/README.md

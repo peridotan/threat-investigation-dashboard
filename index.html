@@ -3,9 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Threat Investigation v1.0.2</title>
+  <title>Threat Investigation v1.0.3</title>
   <meta name="description" content="MITRE ATT&CK Evidenceを基にThreat Actor / Software / Technique / Platformを調査し、関係性と根拠を確認する静的Threat Investigationツール。">
-  <link rel="stylesheet" href="./style.css?v=0.8.1">
+  <link rel="stylesheet" href="./style.css?v=1.0.3">
+  <link rel="stylesheet" href="./font-size.css?v=1.0.3">
+  <script src="./font-size.js?v=1.0.3" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -20,6 +22,15 @@
         <a href="../vulnerability-intelligence-dashboard/?scope=my">Vulnerability Intelligence</a>
         <a href="../security-intelligence-library/">Security Intelligence Library</a>
       </nav>
+      <div class="font-size-control" data-font-size-control>
+        <span class="font-size-control-label"><b aria-hidden="true">Aa</b><span>文字サイズ</span></span>
+        <div class="font-size-buttons" role="group" aria-label="文字サイズ">
+          <button type="button" data-font-size="standard" aria-pressed="true" title="標準 (100%)">標準</button>
+          <button type="button" data-font-size="large" aria-pressed="false" title="大 (115%)">大</button>
+          <button type="button" data-font-size="xlarge" aria-pressed="false" title="特大 (130%)">特大</button>
+        </div>
+        <span id="font-size-status" class="visually-hidden" aria-live="polite"></span>
+      </div>
       <div class="header-reference-block">
         <span class="header-reference-label">REFERENCES</span>
         <nav class="source-links" aria-label="Sources">
@@ -73,7 +84,7 @@
           <h2>Investigation Setup</h2>
           <p class="muted">①検索して調査対象を確定し、②Investigation Contextを決めてから調査を開始します。種類が分からなくてもAll検索から始められます。</p>
         </div>
-        <span class="investigation-model-badge">v1.0.2 · Platform Result Consistency</span>
+        <span class="investigation-model-badge">v1.0.3 · Font Size Control</span>
       </div>
       <div id="external-launch-context" class="external-launch-context" hidden aria-live="polite"></div>
       <div class="investigation-steps investigation-setup-grid" aria-label="Investigation setup">
@@ -282,7 +293,7 @@
   </main>
 
   <footer>
-    <span>© 2026 peridotan · v1.0.2</span>
+    <span>© 2026 peridotan · v1.0.3</span>
     <span><a href="./legal.html">Legal / Data Notice</a> · <a href="./license.html">MIT License</a></span>
   </footer>
 
@@ -290,6 +301,6 @@
   <button type="button" id="back-to-top" class="back-to-top" aria-label="ページ上部へ戻る" aria-hidden="true"><span aria-hidden="true">↑</span><b>Top</b></button>
 
   <script src="./environment.js"></script>
-  <script src="./app.js?v=1.0.2"></script>
+  <script src="./app.js?v=1.0.3"></script>
 </body>
 </html>

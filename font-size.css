@@ -1,0 +1,80 @@
+/* v1.0.3 Accessible font-size control
+   Typography scaling itself is handled by font-size.js so the existing
+   dashboard stylesheet can keep its current layout rules. */
+.font-size-control{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:7px 9px;
+  border:1px solid #dce3ed;
+  border-radius:10px;
+  background:rgba(255,255,255,.9);
+}
+.font-size-control-label{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:#68758a;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.font-size-control-label b{
+  color:#17365d;
+  font-size:14px;
+  letter-spacing:-.03em;
+}
+.font-size-buttons{
+  display:inline-flex;
+  gap:3px;
+  padding:3px;
+  border-radius:8px;
+  background:#edf1f6;
+}
+.font-size-buttons button{
+  border:1px solid transparent;
+  border-radius:6px;
+  background:transparent;
+  color:#536175;
+  padding:5px 8px;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.2;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease;
+}
+.font-size-buttons button:hover{
+  background:#fff;
+  border-color:#c7d3e2;
+  color:#17365d;
+}
+.font-size-buttons button[aria-pressed="true"]{
+  background:#17365d;
+  border-color:#17365d;
+  color:#fff;
+  box-shadow:0 2px 7px rgba(23,54,93,.16);
+}
+.font-size-buttons button:focus-visible{
+  outline:3px solid rgba(45,111,183,.24);
+  outline-offset:2px;
+}
+.visually-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+@media(max-width:900px){
+  .font-size-control{justify-content:flex-start}
+}
+@media(max-width:560px){
+  .font-size-control{width:100%;justify-content:space-between}
+}
