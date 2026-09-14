@@ -1,7 +1,8 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'peridotan-threat-investigation-font-size-v1';
+  const STORAGE_KEY = 'peridotan-security-suite-font-size-v1';
+  const LEGACY_KEYS = ['peridotan-threat-investigation-font-size-v1'];
   const SIZES = {
     standard: { label: '標準', scale: 1 },
     large: { label: '大', scale: 1.15 },
@@ -16,21 +17,30 @@
     return Object.prototype.hasOwnProperty.call(SIZES, value);
   }
 
+  function safeGet(key) {
+    try { return localStorage.getItem(key); } catch (_error) { return null; }
+  }
+
+  function safeSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (_error) {}
+  }
+
   function readPreference() {
-    try {
-      const value = localStorage.getItem(STORAGE_KEY);
-      return isValidSize(value) ? value : 'standard';
-    } catch (_error) {
-      return 'standard';
+    const current = safeGet(STORAGE_KEY);
+    if (isValidSize(current)) return current;
+
+    for (const key of LEGACY_KEYS) {
+      const legacy = safeGet(key);
+      if (isValidSize(legacy)) {
+        safeSet(STORAGE_KEY, legacy);
+        return legacy;
+      }
     }
+    return 'standard';
   }
 
   function writePreference(value) {
-    try {
-      localStorage.setItem(STORAGE_KEY, value);
-    } catch (_error) {
-      // The control still works for the current page if storage is unavailable.
-    }
+    safeSet(STORAGE_KEY, value);
   }
 
   function compactNumber(value) {
