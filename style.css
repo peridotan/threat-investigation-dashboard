@@ -819,3 +819,123 @@ body{font-size:14px}
 .platform-profile-note>strong{font-size:14px;color:#183b63}
 .platform-profile-note>p{margin:0;font-size:12px;line-height:1.55;color:#5f7186}
 @media(max-width:760px){.platform-profile-note{padding:9px 10px}.platform-profile-note>strong{font-size:13px}}
+
+/* Suite navigation alignment preview */
+.suite-navigation-block{
+  display:grid;
+  gap:5px;
+  width:100%;
+}
+.suite-navigation-label{
+  display:block;
+  text-align:right;
+  color:#8290a4;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.12em;
+}
+.suite-links{
+  display:grid;
+  grid-template-columns:1.28fr 1.05fr 1.12fr;
+  gap:4px;
+  width:100%;
+  padding:4px;
+  border:1px solid #d8e2ee;
+  border-radius:14px;
+  background:rgba(255,255,255,.72);
+}
+.suite-links a{
+  display:grid;
+  align-content:center;
+  gap:2px;
+  min-width:0;
+  padding:7px 9px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#536175;
+  text-decoration:none;
+  line-height:1.2;
+}
+.suite-links a:hover{
+  background:#f4f7fb;
+  color:var(--navy);
+}
+.suite-links a.active{
+  background:var(--navy);
+  color:#fff;
+  box-shadow:0 2px 8px rgba(23,54,93,.16);
+}
+.suite-links strong{
+  overflow:hidden;
+  color:inherit;
+  font-size:9px;
+  font-weight:850;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.suite-links small{
+  overflow:hidden;
+  color:#8290a4;
+  font-size:8px;
+  font-weight:650;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.suite-links a.active small{
+  color:rgba(255,255,255,.76);
+}
+@media(max-width:1050px){
+  .header-actions{min-width:390px}
+}
+@media(max-width:900px){
+  .header-actions{width:100%;min-width:0}
+  .suite-navigation-block{max-width:620px}
+  .suite-navigation-label{text-align:left}
+}
+@media(max-width:560px){
+  .suite-links{grid-template-columns:1fr}
+  .suite-links strong,.suite-links small{white-space:normal}
+}
+
+
+/* Suite navigation readability */
+.suite-navigation-label{font-size:9px}
+.suite-links strong{font-size:10px}
+.suite-links small{font-size:9px}
+
+/* Suite navigation readability v1 */
+.suite-navigation-label{font-size:9px}
+.suite-links strong{font-size:10px}
+.suite-links small{font-size:9px}
+
+/* Security Intelligence Suite navigation final readability
+   Apply to:
+   - threat-investigation-dashboard/style.css
+   - vulnerability-intelligence-dashboard/style.css
+*/
+
+.header-actions{
+  min-width:460px;
+}
+
+.suite-links{
+  grid-template-columns:1.28fr 1.05fr 1.22fr;
+}
+
+.suite-links strong{
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+  line-height:1.15;
+}
+
+.suite-links small{
+  white-space:nowrap;
+}
+
+@media(max-width:1050px){
+  .header-actions{
+    min-width:420px;
+  }
+}
