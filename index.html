@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Threat Investigation v1.0.2</title>
+  <meta name="description" content="MITRE ATT&CK Evidenceを基にThreat Actor / Software / Technique / Platformを調査し、関係性と根拠を確認する静的Threat Investigationツール。">
+  <link rel="stylesheet" href="./style.css?v=0.8.1">
+</head>
+<body>
+  <header class="site-header">
+    <div class="hero-copy">
+      <p class="eyebrow">SECURITY INTELLIGENCE · INVESTIGATE</p>
+      <h1>Threat Investigation</h1>
+      <p class="subtitle">Threat Actor / Software / Technique / Platformを起点に、ATT&amp;CK Evidenceと関係性を確認します。必要な場合だけInvestigation LensとEnvironment Overlayを重ね、次の調査や脆弱性対応へつなげます。</p>
+    </div>
+    <aside class="header-actions" aria-label="Dashboard navigation and references">
+      <nav class="suite-links" aria-label="Security Intelligence dashboards">
+        <a class="active" href="./" aria-current="page">Threat Investigation</a>
+        <a href="../vulnerability-intelligence-dashboard/?scope=my">Vulnerability Intelligence</a>
+        <a href="../security-intelligence-library/">Security Intelligence Library</a>
+      </nav>
+      <div class="header-reference-block">
+        <span class="header-reference-label">REFERENCES</span>
+        <nav class="source-links" aria-label="Sources">
+          <a href="https://attack.mitre.org/groups/" target="_blank" rel="noopener noreferrer">MITRE ATT&amp;CK® Groups ↗</a>
+          <a href="https://github.com/mitre-attack/attack-stix-data" target="_blank" rel="noopener noreferrer">STIX Data ↗</a>
+        </nav>
+      </div>
+    </aside>
+  </header>
+
+  <main>
+    <section class="status-row">
+      <div id="load-status">データを読み込み中...</div>
+      <div id="data-meta"></div>
+    </section>
+
+    <section id="data-warning" class="data-warning" hidden role="alert"></section>
+
+    <details class="usage-manual help-hub" id="usage-manual">
+      <summary>
+        <div class="help-summary-copy"><span>使い方・表示の読み方</span><small>Search → Context → Result → 必要なら Further Investigation</small></div>
+        <em class="help-first-time">初めての方へ</em>
+      </summary>
+      <div class="usage-manual-body">
+        <div class="usage-flow usage-flow-v067" aria-label="Threat Investigation usage guide">
+          <article><span class="usage-stage">SEARCH</span><div><strong>STEP 1 · 調査対象を検索・確定</strong><p>名前 / Alias / ATT&amp;CK IDを検索します。種類が分からない場合はAllのままで始め、複数候補なら1件を選びます。</p></div></article>
+          <article><span class="usage-stage">CONTEXT</span><div><strong>STEP 2 · 必要なら調査観点を変更</strong><p>標準はGeneralです。Identity / VirtualizationなどのLensやMy EnvironmentのOverlayは、必要な場合だけ追加します。</p></div></article>
+          <article><span class="usage-stage result-stage">RESULT</span><div><strong>STEP 3 · Findingを起点に読む</strong><p>まずFindingを確認し、必要に応じてContext / Evidence / Further Investigationへ進みます。</p></div></article>
+          <article><span class="usage-stage optional-stage">FURTHER</span><div><strong>Optional · 必要な情報だけ深掘り</strong><p>現在の調査対象を保ったままTechnique / Software / Profileなどを確認します。独立したSTEP 4ではありません。</p></div></article>
+        </div>
+        <div class="help-reading-block">
+          <div class="help-reading-heading"><strong>表示の読み方</strong><span>数値や関係の意味を確認</span></div>
+          <div class="guide-grid compact-guide-grid">
+            <div><strong>Threat Actor</strong><span>UI上の呼称。データ上はMITRE ATT&amp;CK Group（STIX: intrusion-set）を使用します。</span></div>
+            <div><strong>Technique / Software / Campaign</strong><span>ATT&amp;CKに記録された直接relationshipを中心に表示します。</span></div>
+            <div><strong>Investigation Lens</strong><span>調査観点です。Curated LensはMITREの正式分類ではありません。</span></div>
+            <div><strong>Environment Overlay</strong><span>任意の自環境Contextです。Normalized overlapはATT&amp;CK relationshipではありません。</span></div>
+            <div><strong>Entity Resolution</strong><span>完全一致は自動確定。前方一致・部分一致は候補として表示し、曖昧なまま分析を開始しません。</span></div>
+            <div><strong>Relation counts</strong><span>件数は脅威度・現在の活動量・攻撃頻度を意味しません。</span></div>
+          </div>
+        </div>
+        <p class="usage-caveat"><b>Evidence boundary:</b> ATT&amp;CKの直接relationship、Dashboard独自のLens、Environment Overlayによる閲覧補助を区別して表示します。共通TechniqueだけからActor↔CVEやActor↔Productを推定しません。</p>
+      </div>
+    </details>
+
+
+    <section class="panel investigation-workflow" id="investigation-workflow">
+      <div class="panel-heading investigation-heading">
+        <div>
+          <p class="section-kicker">THREAT INVESTIGATION</p>
+          <h2>Investigation Setup</h2>
+          <p class="muted">①検索して調査対象を確定し、②Investigation Contextを決めてから調査を開始します。種類が分からなくてもAll検索から始められます。</p>
+        </div>
+        <span class="investigation-model-badge">v1.0.2 · Platform Result Consistency</span>
+      </div>
+      <div id="external-launch-context" class="external-launch-context" hidden aria-live="polite"></div>
+      <div class="investigation-steps investigation-setup-grid" aria-label="Investigation setup">
+        <article class="investigation-step entry-step">
+          <div class="step-heading"><span class="step-number">1</span><div><strong>Search &amp; Select Target</strong><small>名前やATT&amp;CK IDから調査対象を探す</small></div></div>
+          <div class="investigation-query-row search-first-query">
+            <input id="investigation-query" type="search" placeholder="例: panda / Lazarus / G0032 / Qilin / PowerShell / ESXi" autocomplete="off">
+          </div>
+          <div class="investigation-search-scope" id="investigation-search-scopes" role="group" aria-label="Search scope">
+            <span>Search scope</span>
+            <button type="button" class="active" data-investigation-search-scope="all">All</button>
+            <button type="button" data-investigation-search-scope="actors">Threat Actor</button>
+            <button type="button" data-investigation-search-scope="software">Software</button>
+            <button type="button" data-investigation-search-scope="technology">Technique / Platform</button>
+          </div>
+          <div id="investigation-resolution" class="investigation-resolution" aria-live="polite"></div>
+          <div class="quick-investigations"><span>Quick Start:</span><button type="button" data-investigation-quick="actors|Lazarus"><small>Actor</small>Lazarus</button><button type="button" data-investigation-quick="software|Qilin"><small>Software</small>Qilin</button><button type="button" data-investigation-quick="technology|PowerShell"><small>Technique</small>PowerShell</button><button type="button" data-investigation-quick="technology|ESXi"><small>Platform</small>ESXi<em>ATT&amp;CK Platform</em></button></div>
+          <div class="related-tool-link"><span>Related tool</span><a href="../vulnerability-intelligence-dashboard/"><b>Vulnerability Intelligence ↗</b><small>CVE起点の調査は専用Dashboardで行います</small></a></div>
+        </article>
+
+        <article class="investigation-step scope-step context-step">
+          <div class="step-heading"><span class="step-number">2</span><div><strong>Investigation Context</strong><small>Generalを標準に、必要な場合だけ調査観点や自環境を変更</small></div></div>
+          <details id="investigation-context-disclosure" class="investigation-context-disclosure">
+            <summary>
+              <div class="context-current-summary">
+                <div class="context-current-item"><span>LENS</span><strong id="context-current-lens">General</strong><small id="context-current-lens-help">ATT&amp;CK Evidence全体を見る</small></div>
+                <div class="context-current-item"><span>ENVIRONMENT OVERLAY</span><strong id="context-current-overlay">Not used</strong><small>Optional</small></div>
+              </div>
+              <span class="context-change-label">Contextを変更</span>
+            </summary>
+            <div class="context-editor-body">
+              <section class="context-section lens-context-section">
+                <div class="context-subheading"><div><strong>Investigation Lens</strong><small>Generalが標準です。必要な場合だけ調査観点を変更します。</small></div><span class="context-required">DEFAULT: GENERAL</span></div>
+                <div id="investigation-lens-presets" class="scope-preset-grid lens-preset-grid">
+                  <button type="button" class="active" data-investigation-lens="general"><b>General</b><small>ATT&amp;CK全体</small></button>
+                  <button type="button" data-investigation-lens="identity"><b>Identity</b><small>Curated lens</small></button>
+                  <button type="button" data-investigation-lens="internet"><b>Internet-facing</b><small>Curated lens</small></button>
+                  <button type="button" data-investigation-lens="virtualization"><b>Virtualization</b><small>ATT&amp;CK Platform: ESXi</small></button>
+                  <button type="button" data-investigation-lens="server"><b>Server</b><small>Curated lens</small></button>
+                  <button type="button" data-investigation-lens="cloud"><b>Cloud</b><small>Curated lens</small></button>
+                </div>
+                <div id="investigation-lens-summary" class="investigation-lens-summary"></div>
+              </section>
+              <section class="context-section overlay-context-section">
+                <div class="context-subheading"><div><strong>Environment Overlay</strong><small>任意 · My Environmentとの接点を追加表示</small></div><span class="context-optional">OPTIONAL</span></div>
+                <div class="environment-overlay-control">
+                  <label for="environment-overlay-select">Overlay</label>
+                  <select id="environment-overlay-select">
+                    <option value="none">Not used</option>
+                    <option value="all">All My Environment</option>
+                    <option value="identity">Identity Environment</option>
+                    <option value="internet">Internet-facing Environment</option>
+                    <option value="virtualization">Virtualization Environment</option>
+                    <option value="server">Server Environment</option>
+                    <option value="cloud">Cloud Environment</option>
+                    <option value="custom">Custom Environment</option>
+                  </select>
+                </div>
+                <div id="environment-overlay-summary" class="investigation-scope-summary environment-overlay-summary"></div>
+                <p class="scope-caveat">Environment OverlayはInvestigation Lensとは別物です。Overlayが0件でも調査は実行できます。Saved Environment ViewはMy Environmentからユーザーが選んだ項目だけを保持します。</p>
+              </section>
+            </div>
+          </details>
+        </article>
+      </div>
+      <div class="investigation-launch" id="investigation-launch">
+        <div id="investigation-launch-summary" class="investigation-launch-summary"></div>
+        <div class="investigation-launch-actions">
+          <button type="button" id="investigation-context-toggle" class="investigation-context-toggle" hidden>Contextを変更</button>
+          <button type="button" id="investigation-overlay-configure" class="investigation-scope-configure" hidden>Environment Viewを編集 ↓</button>
+          <button type="button" id="investigation-start" disabled>調査対象を入力してください</button>
+        </div>
+      </div>
+      <details id="investigation-custom-editor" class="custom-scope-editor setup-scope-editor">
+        <summary><span id="investigation-scope-editor-label">Environment Viewを編集</span> <span id="investigation-scope-editor-hint">Environment Profileから今回重ねる項目を選択</span></summary>
+        <div id="investigation-custom-options" class="custom-scope-options"></div>
+      </details>
+    </section>
+
+    <section class="panel investigation-result-panel" id="investigation-result" aria-live="polite">
+      <div class="panel-heading investigation-result-heading">
+        <div>
+          <p class="section-kicker">INVESTIGATION RESULT</p>
+          <h2><span class="step-number inline-step-number">3</span> Investigation Result</h2>
+          <p class="muted">Findingを中心に確認し、必要に応じてContext / Evidence / Further Investigationへ進みます。</p>
+        </div>
+        <span id="investigation-result-status" class="investigation-result-status">READY</span>
+      </div>
+      <div id="investigation-result-body" class="investigation-result-body"></div>
+    </section>
+
+    <section class="panel environment-panel environment-settings-panel" id="my-environment">
+      <details class="environment-settings-disclosure" id="environment-settings-disclosure">
+        <summary>
+          <span class="environment-settings-title">
+            <span class="section-kicker">ENVIRONMENT PROFILE · SETTINGS</span>
+            <strong>Environment Profile</strong>
+            <small>任意のEnvironment Overlayに使う共通環境データ。未登録でもThreat Investigationは利用できます。</small>
+          </span>
+          <span class="environment-settings-metrics" aria-live="polite">
+            <span><b id="env-platform-count">0</b><small>Platforms</small></span>
+            <span><b id="env-product-count">0</b><small>Products</small></span>
+            <span><b id="env-technology-count">0</b><small>Technologies</small></span>
+            <em class="count-pill" id="environment-status">0 items</em>
+          </span>
+        </summary>
+        <div class="environment-settings-content">
+          <p class="environment-settings-note">Environment Overlayを使う場合の設定データです。Vulnerability Intelligenceと同じProfileを共有します。Threat Investigation自体はEnvironment Profileなしでも利用できます。</p>
+          <details class="environment-profile-manager" id="environment-profile-manager">
+            <summary><strong>Environment Profileを管理</strong><span>登録内容の確認・追加・削除・Vulnerability Intelligenceとの共有設定</span></summary>
+            <div class="environment-profile-manager-body">
+              <div class="environment-bridge"><div><strong>Shared across dashboards</strong><span>ProductはVulnerability IntelligenceでExploited / Emerging CVEとの照合に使います。</span></div><a href="../vulnerability-intelligence-dashboard/?scope=my">My Environmentの脆弱性を開く →</a></div>
+              <details class="environment-editor" id="environment-editor">
+                <summary>登録内容を編集 <span>Platform / Product / Technologyを登録</span></summary>
+                <div class="environment-editor-body">
+                  <section class="environment-fieldset">
+                    <div class="environment-field-heading"><div><strong>Platforms</strong><small>ATT&amp;CKに収録されたPlatformから選択。複数選択できます。</small></div></div>
+                    <div id="environment-platforms" class="environment-options"></div>
+                  </section>
+                  <section class="environment-fieldset">
+                    <div class="environment-field-heading"><div><strong>Vendor / Product</strong><small>現在のKEV / Emergingデータに存在しない製品も自由に登録できます。既知のVendor / Productは表記を正規化し、候補にないものも登録できます。Productは空欄でも構いません。</small></div></div>
+                    <div class="environment-add-row product-row">
+                      <label>Vendor<input id="environment-vendor-input" type="text" list="environment-vendor-suggestions" autocomplete="off" placeholder="例: VMware"><datalist id="environment-vendor-suggestions"></datalist></label>
+                      <label>Product (optional)<input id="environment-product-input" type="text" list="environment-product-suggestions" autocomplete="off" placeholder="例: ESXi"><datalist id="environment-product-suggestions"></datalist></label>
+                      <button type="button" id="environment-product-add">追加</button>
+                    </div>
+                    <div id="environment-product-suggestion" class="environment-product-suggestion" hidden></div>
+                    <div id="environment-products" class="environment-chips"></div>
+                    <div id="environment-product-review" class="environment-product-review" hidden></div>
+                  </section>
+                  <section class="environment-fieldset">
+                    <div class="environment-field-heading"><div><strong>Technologies</strong><small>例: PowerShell / Active Directory / Entra ID。現行版ではATT&amp;CK Entity名・Alias・IDとの完全一致だけをDirect Matchとして扱います。</small></div></div>
+                    <div class="environment-add-row">
+                      <label>Technology<input id="environment-technology-input" type="text" placeholder="例: PowerShell"></label>
+                      <button type="button" id="environment-technology-add">追加</button>
+                    </div>
+                    <div id="environment-technologies" class="environment-chips"></div>
+                  </section>
+                  <div id="environment-legacy" class="environment-legacy" hidden></div>
+                  <div class="environment-footer">
+                    <p>ブラウザのlocalStorageにのみ保存します。Environment overlapは脅威度・攻撃可能性・リスクスコアではありません。</p>
+                    <button type="button" id="environment-clear">Environment Profileをクリア</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </details>
+        </div>
+      </details>
+    </section>
+
+    <details class="dataset-overview" id="dataset-overview">
+      <summary><strong>ATT&amp;CK Dataset Overview</strong><span>任意 · 全体件数や広いCoverageを確認するときだけ開く</span></summary>
+      <div class="dataset-overview-body">
+        <section class="kpi-grid four" aria-label="Summary metrics">
+              <button class="kpi-card actor" data-view="actors"><span>Threat Actors</span><b id="kpi-actors">—</b><small>ATT&CK Groups</small></button>
+              <button class="kpi-card technique" data-view="techniques"><span>Unique Techniques</span><b id="kpi-techniques">—</b><small>Actorから参照される一意のTechnique</small></button>
+              <button class="kpi-card software" data-view="software"><span>Unique Software</span><b id="kpi-software">—</b><small>Actorから参照される一意のMalware / Tool</small></button>
+              <button class="kpi-card campaign" data-view="campaigns"><span>Campaigns</span><b id="kpi-campaigns">—</b><small>ATT&CK Campaigns</small></button>
+            </section>
+
+            <section class="panel-grid">
+              <article class="panel">
+                <div class="panel-heading"><div><p class="section-kicker">ACTOR COVERAGE</p><h2>Actors with Broad Technique Coverage</h2></div><span class="muted">Technique relationships</span></div>
+                <div id="top-actors" class="bar-chart"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-heading"><div><p class="section-kicker">COMMON BEHAVIOR</p><h2>Techniques Used by Many Actors</h2></div><span class="muted">Actor relationships</span></div>
+                <div id="top-techniques" class="bar-chart"></div>
+              </article>
+            </section>
+      </div>
+    </details>
+
+    <section class="panel explorer-panel" id="explorer">
+      <div class="panel-heading explorer-heading">
+        <div><p class="section-kicker">FURTHER INVESTIGATION</p><h2 id="explorer-title">Threat Actors</h2><p class="explorer-purpose">STEP 3のResultで必要と判断したときだけ使う詳細調査レイヤーです。</p></div>
+        <span id="result-count" class="count-pill">0件</span>
+      </div>
+
+      <div class="segmented" id="view-switch" role="group" aria-label="Intelligence view">
+        <button type="button" class="active" data-view="actors">Actors</button>
+        <button type="button" data-view="techniques">Techniques</button>
+        <button type="button" data-view="software">Software</button>
+        <button type="button" data-view="campaigns">Campaigns</button>
+      </div>
+
+      <div class="filters">
+        <label>横断検索<input id="search" type="search" placeholder="Actor / Alias / Technique / Software / Campaign / ID"><small>Actor / Technique / Software / Campaignを横断検索します。直接一致したEntityと、選択中タブに関連するEntityを表示します。</small></label>
+        <label>Tactic<select id="tactic-filter"><option value="">All tactics</option></select></label>
+        <label>Platform<select id="platform-filter"><option value="">All platforms</option></select></label>
+      </div>
+
+      <div id="active-context" class="active-context" hidden></div>
+
+      <section id="search-insight" class="search-insight" hidden aria-live="polite"></section>
+
+      <div id="entity-list" class="entity-list"></div>
+    </section>
+
+    <section class="notice-grid">
+      <article class="notice"><h3>Source of truth</h3><p>MITRE ATT&CK Enterprise STIX 2.1の最新データをGitHub Actions実行時に取得します。</p></article>
+      <article class="notice"><h3>Interpretation</h3><p>Actor InvestigationはATT&CK上の収録情報を調査しやすく再構成します。Defensive Investigation LensesはDashboard独自の閲覧補助であり、危険度・現在活動・対策優先度を独自スコア化しません。</p></article>
+      <article class="notice"><h3>Update model</h3><p>定期実行時に取得・整形・検証し、成功したデータだけをGitHub Pagesへ公開します。</p></article>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 peridotan · v1.0.2</span>
+    <span><a href="./legal.html">Legal / Data Notice</a> · <a href="./license.html">MIT License</a></span>
+  </footer>
+
+
+  <button type="button" id="back-to-top" class="back-to-top" aria-label="ページ上部へ戻る" aria-hidden="true"><span aria-hidden="true">↑</span><b>Top</b></button>
+
+  <script src="./environment.js"></script>
+  <script src="./app.js?v=1.0.2"></script>
+</body>
+</html>
