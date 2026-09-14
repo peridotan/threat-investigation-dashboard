@@ -749,9 +749,9 @@ function technologyEntityMatches(actor, sourceEnvironment=environment) {
   return {matched,unmatched};
 }
 
-function vulnerabilityDashboardUrl(actor=null) {
+function vulnerabilityDashboardUrl(actor=null, targetScope='my') {
   const params = new URLSearchParams();
-  params.set('scope','my');
+  params.set('scope',targetScope);
   if(actor){
     params.set('from','threat-actor');
     params.set('actor',actor.external_id||'');
@@ -1471,8 +1471,18 @@ function resultNextActions(entity,view){
     if(entity.software?.length)actions.push(`<button type="button" class="next-action" data-related-view="software" data-related-search="${esc(entity.external_id)}"><span>RELATED SOFTWARE</span><b>${entity.software.length}件を見る →</b><small>Software ATT&amp;CK links to this technique</small></button>`);
     if(entity.campaigns?.length)actions.push(`<button type="button" class="next-action" data-related-view="campaigns" data-related-search="${esc(entity.external_id)}"><span>CAMPAIGNS</span><b>${entity.campaigns.length}件を見る →</b><small>Campaign relationships recorded in ATT&amp;CK</small></button>`);
   }
-  if(stats.selectedProducts.length){
-    const href=view==='actors'?vulnerabilityDashboardUrl(entity):'../vulnerability-intelligence-dashboard/?scope=my&from=threat-investigation';
+  if(view==='actors'){
+    const hasProductContext=stats.selectedProducts.length>0;
+    const href=vulnerabilityDashboardUrl(entity,hasProductContext?'my':'all');
+    const actionLabel=hasProductContext
+      ? 'Environment Overlayの脆弱性を見る →'
+      : 'Vulnerability Intelligenceで優先度を確認 →';
+    const contextNote=hasProductContext
+      ? 'Product + Threat Actor context — not direct threat evidence'
+      : 'Threat Actor context only — not direct Actor↔CVE evidence';
+    actions.push(`<a class="next-action context-action" href="${esc(href)}"><span>VULNERABILITY CONTEXT</span><b>${actionLabel}</b><small>${contextNote}</small></a>`);
+  }else if(stats.selectedProducts.length){
+    const href='../vulnerability-intelligence-dashboard/?scope=my&from=threat-investigation';
     actions.push(`<a class="next-action context-action" href="${esc(href)}"><span>VULNERABILITY CONTEXT</span><b>Environment Overlayの脆弱性を見る →</b><small>Product context only — not direct threat evidence</small></a>`);
   }
   return `<div class="next-investigation-grid">${actions.join('')}</div>`;
