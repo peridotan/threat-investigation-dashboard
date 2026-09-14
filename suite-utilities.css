@@ -284,3 +284,41 @@ body > footer:not(.suite-footer){
 .suite-footer-links a{
   font-size:calc(11px * var(--suite-font-scale, 1));
 }
+
+/* Security Intelligence Suite ATT&CK context handoff */
+.external-context-entities{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:6px;
+}
+
+.external-context-entity{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 8px;
+  border:1px solid #cbd6e4;
+  border-radius:999px;
+  background:#fff;
+  color:#17365d;
+  font-size:9px;
+  font-weight:850;
+  line-height:1.2;
+  text-decoration:none;
+}
+
+.external-context-entity:hover{
+  border-color:#8fa7c5;
+  background:#f4f7fb;
+  text-decoration:none;
+}
+
+.external-context-entity.actor{
+  border-color:#e2c0c0;
+  color:#8a3030;
+}
+
+.external-context-entity.technique{
+  border-color:#bfd0e8;
+  color:#315e9b;
+}

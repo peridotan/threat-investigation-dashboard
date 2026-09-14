@@ -830,15 +830,60 @@ function applyEntityDeepLink(raw='') {
   return true;
 }
 
+function externalContextEntityHref(type,id){
+  const url=new URL(window.location.href);
+  url.searchParams.set('entity',`${type}:${id}`);
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 function renderExternalLaunchContext(){
   const box=$('external-launch-context');
   if(!box)return;
-  if(!externalLaunchContext){box.hidden=true;box.innerHTML='';return;}
+
+  if(!externalLaunchContext){
+    box.hidden=true;
+    box.innerHTML='';
+    return;
+  }
+
   const source=deepLinkSourceLabel(externalLaunchContext.from);
   const title=externalLaunchContext.title||externalLaunchContext.context||'';
+  const actors=externalLaunchContext.actors||[];
+  const techniques=externalLaunchContext.techniques||[];
+
+  const actorChips=actors.map(id=>
+    `<a class="external-context-entity actor" href="${esc(externalContextEntityHref('actor',id))}">${esc(id)}</a>`
+  ).join('');
+
+  const techniqueChips=techniques.map(id=>
+    `<a class="external-context-entity technique" href="${esc(externalContextEntityHref('technique',id))}">${esc(id)}</a>`
+  ).join('');
+
+  const entities=(actorChips||techniqueChips)
+    ? `<div class="external-context-entities">${actorChips}${techniqueChips}</div>`
+    : '';
+
+  const entitySummary=(actors.length||techniques.length)
+    ? `<small>${actors.length?`${actors.length} Actor${actors.length===1?'':'s'}`:''}${actors.length&&techniques.length?' · ':''}${techniques.length?`${techniques.length} Technique${techniques.length===1?'':'s'}`:''}</small>`
+    : '';
+
+  const note=(actors.length||techniques.length)
+    ? '記事から引き継いだATT&CK Contextです。各IDを選択して調査対象にできます。記事Context自体を新たなATT&CK relationshipの証拠としては扱いません。'
+    : 'この情報は調査入口のNavigation Contextです。ATT&CK direct evidenceやrelationshipとしては扱いません。';
+
   box.hidden=false;
-  box.innerHTML=`<div><span>INTELLIGENCE CONTEXT</span><strong>Launched from ${esc(source)}</strong>${title?`<small>${esc(title)}</small>`:''}</div><p>この情報は調査入口のNavigation Contextです。ATT&amp;CK direct evidenceやrelationshipとしては扱いません。</p>`;
+  box.innerHTML=`
+    <div>
+      <span>INTELLIGENCE CONTEXT</span>
+      <strong>Launched from ${esc(source)}</strong>
+      ${title?`<small>${esc(title)}</small>`:''}
+      ${entities}
+      ${entitySummary}
+    </div>
+    <p>${note}</p>
+  `;
 }
+
 
 function applyLaunchParams() {
   const params=new URLSearchParams(window.location.search);
@@ -861,7 +906,29 @@ function applyLaunchParams() {
   const from=params.get('from')||'';
   const context=params.get('context')||'';
   const title=params.get('contextTitle')||'';
-  externalLaunchContext=(from||context||title)?{from,context,title}:null;
+
+  const actors=[...new Set(
+    params.getAll('actor')
+      .map(x=>String(x||'').trim().toUpperCase())
+      .filter(x=>/^G\d{4}$/.test(x))
+  )];
+
+  const techniques=[...new Set(
+    params.getAll('technique')
+      .map(x=>String(x||'').trim().toUpperCase())
+      .filter(x=>/^T\d{4}(?:\.\d{3})?$/.test(x))
+  )];
+
+  externalLaunchContext=(
+    from||context||title||actors.length||techniques.length
+  ) ? {
+    from,
+    context,
+    title,
+    actors,
+    techniques
+  } : null;
+
   persistInvestigation();
 }
 
