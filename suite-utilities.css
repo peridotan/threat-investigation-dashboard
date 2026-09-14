@@ -1,0 +1,159 @@
+/* Security Intelligence Suite shared utilities v1 */
+.suite-topbar-utilities{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  min-width:0;
+}
+
+.suite-repository-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:7px 10px;
+  border:1px solid #dce3ed;
+  border-radius:10px;
+  background:rgba(255,255,255,.9);
+  color:#17365d;
+  font-family:Inter,"Noto Sans JP","Yu Gothic UI","Yu Gothic",system-ui,-apple-system,sans-serif;
+  font-size:10px;
+  font-weight:800;
+  line-height:1.2;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+
+.suite-repository-link:hover{
+  background:#fff;
+  border-color:#b7c6d8;
+  box-shadow:0 2px 7px rgba(23,54,93,.10);
+  transform:translateY(-1px);
+  text-decoration:none;
+}
+
+.suite-repository-link:focus-visible,
+.suite-top-button:focus-visible{
+  outline:3px solid rgba(45,111,183,.24);
+  outline-offset:2px;
+}
+
+.suite-top-button{
+  position:fixed;
+  right:22px;
+  bottom:76px;
+  z-index:80;
+  border:1px solid #d3deeb;
+  border-radius:999px;
+  background:#17365d;
+  color:#fff;
+  padding:9px 13px;
+  font-family:Inter,"Noto Sans JP","Yu Gothic UI","Yu Gothic",system-ui,-apple-system,sans-serif;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.2;
+  box-shadow:0 8px 20px rgba(20,40,70,.18);
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(8px);
+  transition:opacity .15s ease,transform .15s ease,box-shadow .15s ease;
+}
+
+.suite-top-button.is-visible{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+
+.suite-top-button:hover{
+  box-shadow:0 11px 24px rgba(20,40,70,.24);
+  transform:translateY(-1px);
+}
+
+@media(max-width:1050px){
+  .suite-topbar-utilities{
+    justify-content:flex-end;
+  }
+}
+
+@media(max-width:760px){
+  .suite-topbar-utilities{
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .suite-top-button{
+    right:14px;
+    bottom:72px;
+  }
+}
+
+/* Align legacy Threat back-to-top with Suite common style */
+#back-to-top.suite-top-button{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border:1px solid #d3deeb;
+  border-radius:999px;
+  background:#17365d;
+  color:#fff;
+  padding:9px 13px;
+  box-shadow:0 8px 20px rgba(20,40,70,.18);
+}
+
+#back-to-top.suite-top-button:hover{
+  background:#17365d;
+  color:#fff;
+  box-shadow:0 11px 24px rgba(20,40,70,.24);
+}
+
+#back-to-top.suite-top-button span,
+#back-to-top.suite-top-button b{
+  color:inherit;
+}
+
+/* Final Threat back-to-top alignment */
+#back-to-top{
+  right:22px;
+  bottom:76px;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:9px 13px;
+  border:1px solid #d3deeb;
+  border-radius:999px;
+  background:#17365d;
+  color:#fff;
+  box-shadow:0 8px 20px rgba(20,40,70,.18);
+  backdrop-filter:none;
+}
+
+#back-to-top:hover{
+  background:#17365d;
+  border-color:#d3deeb;
+  color:#fff;
+  box-shadow:0 11px 24px rgba(20,40,70,.24);
+}
+
+#back-to-top span,
+#back-to-top b{
+  color:#fff;
+}
+
+#back-to-top.with-launch{
+  bottom:96px;
+}
+
+@media(max-width:700px){
+  #back-to-top{
+    right:14px;
+    bottom:72px;
+  }
+
+  #back-to-top.with-launch{
+    bottom:174px;
+  }
+}
