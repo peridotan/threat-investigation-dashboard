@@ -10,39 +10,23 @@
   <script src="./font-size.js?v=1.0.3" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="hero-copy">
-      <p class="eyebrow">SECURITY INTELLIGENCE · INVESTIGATE</p>
-      <h1>Threat Investigation</h1>
-      <p class="subtitle">Threat Actor / Software / Technique / Platformを起点に、ATT&amp;CK Evidenceと関係性を確認します。必要な場合だけInvestigation LensとEnvironment Overlayを重ね、次の調査や脆弱性対応へつなげます。</p>
-    </div>
-    <aside class="header-actions" aria-label="Dashboard navigation and references">
-      <div class="suite-navigation-block">
-        <span class="suite-navigation-label">SECURITY INTELLIGENCE SUITE</span>
-        <nav class="suite-links" aria-label="Security Intelligence Suite">
-          <a data-suite-link="library" href="../security-intelligence-library/">
-            <strong>Security Intelligence Library</strong>
-            <small>Observe / Interpret</small>
-          </a>
-          <a class="active" href="./" aria-current="page">
-            <strong>Threat Investigation</strong>
-            <small>Investigate / Relate</small>
-          </a>
-          <a href="../vulnerability-intelligence-dashboard/?scope=my">
-            <strong>Vulnerability Intelligence</strong>
-            <small>Prioritize</small>
-          </a>
-        </nav>
-      </div>
-      <script>
-        (() => {
-          const libraryLink = document.querySelector('[data-suite-link="library"]');
-          if (!libraryLink) return;
-          if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-            libraryLink.href = '../security-intelligence-library/site/';
-          }
-        })();
-      </script>
+  <div class="suite-topbar" role="navigation" aria-label="Security Intelligence Suite">
+    <div class="suite-topbar-inner">
+      <span class="suite-topbar-brand">SECURITY INTELLIGENCE SUITE</span>
+      <nav class="suite-topbar-links" aria-label="Security Intelligence Suite">
+        <a data-suite-link="library" href="../security-intelligence-library/">
+          <strong>Security Intelligence Library</strong>
+          <small>Observe / Interpret</small>
+        </a>
+        <a class="active" href="./" aria-current="page">
+          <strong>Threat Investigation</strong>
+          <small>Investigate / Relate</small>
+        </a>
+        <a href="../vulnerability-intelligence-dashboard/?scope=my">
+          <strong>Vulnerability Intelligence</strong>
+          <small>Prioritize</small>
+        </a>
+      </nav>
       <div class="font-size-control" data-font-size-control>
         <span class="font-size-control-label"><b aria-hidden="true">Aa</b><span>文字サイズ</span></span>
         <div class="font-size-buttons" role="group" aria-label="文字サイズ">
@@ -52,6 +36,25 @@
         </div>
         <span id="font-size-status" class="visually-hidden" aria-live="polite"></span>
       </div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const libraryLink = document.querySelector('[data-suite-link="library"]');
+      if (!libraryLink) return;
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        libraryLink.href = '../security-intelligence-library/site/';
+      }
+    })();
+  </script>
+
+  <header class="site-header">
+    <div class="hero-copy">
+      <p class="eyebrow">SECURITY INTELLIGENCE · INVESTIGATE</p>
+      <h1>Threat Investigation</h1>
+      <p class="subtitle">Threat Actor / Software / Technique / Platformを起点に、ATT&amp;CK Evidenceと関係性を確認します。必要な場合だけInvestigation LensとEnvironment Overlayを重ね、次の調査や脆弱性対応へつなげます。</p>
+    </div>
+    <aside class="header-actions" aria-label="Dashboard references">
       <div class="header-reference-block">
         <span class="header-reference-label">REFERENCES</span>
         <nav class="source-links" aria-label="Sources">

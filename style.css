@@ -939,3 +939,104 @@ body{font-size:14px}
     min-width:420px;
   }
 }
+
+/* Security Intelligence Suite top chrome v1 */
+.suite-topbar{
+  width:100%;
+  border-bottom:1px solid #d9e2ea;
+  background:#f7f9fb;
+  color:#17324d;
+}
+.suite-topbar-inner{
+  width:min(1240px,calc(100% - 32px));
+  margin-inline:auto;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:18px;
+  min-height:58px;
+  padding:8px 0;
+}
+.suite-topbar-brand{
+  color:#607080;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.12em;
+  white-space:nowrap;
+}
+.suite-topbar-links{
+  display:grid;
+  grid-template-columns:1.28fr 1.05fr 1.22fr;
+  gap:4px;
+  min-width:0;
+  padding:4px;
+  border:1px solid #d8e2ee;
+  border-radius:14px;
+  background:rgba(255,255,255,.72);
+}
+.suite-topbar-links a{
+  display:grid;
+  align-content:center;
+  gap:2px;
+  min-width:0;
+  padding:7px 9px;
+  border-radius:10px;
+  color:#536175;
+  text-decoration:none;
+  line-height:1.2;
+}
+.suite-topbar-links a:hover{
+  background:#fff;
+  color:#17365d;
+}
+.suite-topbar-links a.active{
+  background:#17365d;
+  color:#fff;
+  box-shadow:0 2px 8px rgba(23,54,93,.16);
+}
+.suite-topbar-links strong{
+  color:inherit;
+  font-size:10px;
+  font-weight:850;
+  line-height:1.15;
+  white-space:normal;
+}
+.suite-topbar-links small{
+  color:#8290a4;
+  font-size:9px;
+  font-weight:650;
+  white-space:nowrap;
+}
+.suite-topbar-links a.active small{
+  color:rgba(255,255,255,.78);
+}
+.suite-topbar .font-size-control{
+  justify-self:end;
+  margin:0;
+}
+.site-header .header-actions{
+  min-width:0;
+  width:auto;
+  padding-top:3px;
+}
+@media(max-width:1050px){
+  .suite-topbar-inner{
+    grid-template-columns:1fr auto;
+    gap:10px 14px;
+  }
+  .suite-topbar-brand{
+    grid-column:1 / -1;
+  }
+}
+@media(max-width:760px){
+  .suite-topbar-inner{
+    grid-template-columns:1fr;
+    align-items:stretch;
+  }
+  .suite-topbar-links{
+    grid-template-columns:1fr;
+  }
+  .suite-topbar .font-size-control{
+    justify-self:start;
+  }
+}
