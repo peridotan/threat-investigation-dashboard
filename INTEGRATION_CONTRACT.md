@@ -1,4 +1,4 @@
-# Threat Investigation Integration Contract v0.8
+# Threat Investigation Integration Contract v1.0
 
 ## Entity deep links
 
@@ -92,3 +92,57 @@ The existing Explorer parameters remain supported:
 ```
 
 New integrations should prefer `entity=` when the target entity is already known.
+
+## Suite v1.0 alignment
+
+The canonical cross-tool contract is maintained in:
+
+`peridotan/security-intelligence-library/SUITE_INTEGRATION_CONTRACT.md`
+
+This document defines Threat Investigation-specific behavior and remains compatible with that Suite contract.
+
+## Context collection parameters
+
+Threat Investigation accepts repeated Suite context parameters in addition to the primary `entity` target.
+
+### Actor context
+
+```text
+?actor=G1057
+&actor=G0032
+```
+
+Actor values represent navigation or investigation context.
+
+When one Actor is explicitly selected as the primary target, the source may also provide:
+
+```text
+?entity=actor:G1057
+```
+
+### Technique context
+
+```text
+?technique=T1078
+&technique=T1098.005
+&technique=T1566.004
+```
+
+When one unambiguous Technique is the primary target, the source may also provide:
+
+```text
+?entity=technique:T1190
+```
+
+When multiple Techniques are provided without an explicit `entity`, Threat Investigation presents them as selectable context and does not arbitrarily choose one.
+
+## Evidence boundary
+
+Suite context is not new ATT&CK evidence.
+
+In particular:
+
+- Actor context does not create Actor-to-CVE evidence.
+- Technique context does not create a new ATT&CK relationship.
+- `from`, `context`, and `contextTitle` remain navigation metadata.
+- Deep linking may preselect an investigation target but does not auto-create source-recorded evidence.
