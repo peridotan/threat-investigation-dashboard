@@ -170,3 +170,35 @@ Third-party data is subject to the source provider's terms. See `THIRD_PARTY_NOT
 - `ROADMAP.md` — v1.1+ candidates
 - `RELEASE_CHECKLIST.md` — v1.0 release checks
 - `CHANGELOG.md` — version history
+
+## 定期更新の運用と復旧
+
+### スケジュールと停止リスク
+
+`Refresh ATT&CK data and deploy Pages` は毎週 **月曜日 00:15 UTC（09:15 JST）** にMITRE ATT&CKデータを更新し、検証後にGitHub Pagesへ公開します。`main`へのpushと手動実行にも対応しています。
+
+このリポジトリは公開repositoryです。GitHubでは、**repositoryに60日間活動がないと、scheduleで起動するworkflowが自動停止**する場合があります。GitHub Actionsの実行履歴があるだけで停止リスクが解消したとは判断せず、定期的にrepositoryの活動と実行履歴を確認してください。詳細は[GitHub Docs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)を参照してください。
+
+運用上の確認基準は、`main`の最新コミット日を目安として次のとおりです。これは早めに確認するための目安であり、GitHubが停止を判定するrepository activityそのものとは異なります。
+
+- **45日経過:** Actionsの最新成功日時と公開サイトのデータ更新状況を確認し、必要な保守作業を計画する。
+- **55日経過:** 次の定期実行を待たず、予定済みの実作業を`main`へ反映する。更新のためだけの空コミットは作成しない。
+- **60日到達前:** repositoryの活動が継続し、workflowが有効であることを確認する。
+
+### Actions停止時の再有効化
+
+1. repositoryの **Actions** タブを開き、左側から **Refresh ATT&CK data and deploy Pages** を選択する。
+2. workflowが無効の場合、workflow画面の **…** メニューから **Enable workflow** を選択する。
+3. workflow画面の **Run workflow** を開き、branchに `main` を選択して手動実行する。
+4. 実行結果でATT&CK data更新、validation、Pages deployの各stepが成功したことを確認する。失敗した場合は該当stepのログを確認してから再実行する。
+
+手動実行でサイトを更新しても、schedule自体が有効になったことを必ず確認してください。workflowの定義や実行頻度を変更する必要はありません。
+
+### データ更新と公開状態の確認
+
+- [Actions実行履歴](https://github.com/peridotan/threat-investigation-dashboard/actions/workflows/pages.yml)で、最新のscheduleまたは手動実行が **Success** であることを確認する。
+- [公開サイト](https://peridotan.github.io/threat-investigation-dashboard/)を開き、Threat Actor / Software / Technique / Platformの検索・調査画面が表示され、データ読み込みエラーがないことを確認する。
+- 調査対象を1件開き、ATT&CKのID・名称・関係性などのデータが表示されることを確認する。
+- GitHubの **Settings > Pages** で公開先が `https://peridotan.github.io/threat-investigation-dashboard/` となっていることを確認する。
+
+`dashboard.json` はActionsがATT&CK dataを更新・検証してからPagesへ公開します。画面・ドキュメントのみの変更では、データファイルの再生成は不要です。
